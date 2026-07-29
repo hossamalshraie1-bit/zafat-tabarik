@@ -1,4 +1,4 @@
-ser-agent: *
+User-agent: *
 Allow: /
 Disallow: /private/
 Disallow: /admin/
