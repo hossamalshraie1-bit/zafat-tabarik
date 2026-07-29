@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة | استوديو النبلاء</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- AWS SDK v2 for Filebase direct upload -->
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1450.0.min.js"></script>
+
+  <link rel="stylesheet" href="app.css">
+
+  <style>
+    html, body {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow-x: hidden !important;
+      background: var(--bg-primary) !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      align-items: unset !important;
+      justify-content: unset !important;
+    }
+
+    .adm-root {
+      min-height: 100vh;
+      background: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      color: var(--text-primary);
+    }
+
+    .adm-layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* Sidebar */
+    .adm-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .adm-main {
+      flex: 1;
+      padding: 26px;
+      overflow-y: auto;
+      min-height: 100vh;
+    }
+
+    /* Mobile bottom nav */
+    .adm-bottom-nav-mobile {
+      display: none;
+    }
+
+    @media (max-width: 767px) {
+      .adm-sidebar { display: none !important; }
+      .adm-bottom-nav-mobile { display: flex !important; }
+      .adm-main { padding: 16px; padding-bottom: 80px; }
+      .adm-grid-3 { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important; }
+      .adm-grid-2 { grid-template-columns: 1fr !important; }
+    }
+
+    @media (min-width: 768px) {
+      .adm-mobile-header { display: none !important; }
+      .adm-grid-3 { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important; gap: 20px !important; }
+      .adm-grid-2 { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important; gap: 20px !important; }
+      .adm-main { max-width: 1200px; margin: 0 auto; }
+    }
+
+    .adm-nav-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; border-radius: 10px; border: none;
+      background: transparent; color: #aeaeae;
+      font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.84rem;
+      cursor: pointer; text-align: right; width: 100%;
+      border-right: 3px solid transparent;
+      transition: all 0.18s;
+    }
+    .adm-nav-btn.active {
+      background: rgba(204,164,59,0.15);
+      color: #cca43b;
+      border-right: 3px solid #cca43b;
+    }
+    .adm-nav-btn:hover:not(.active) { background: rgba(255,255,255,0.04); }
+
+    .adm-card {
+      border-radius: 14px; overflow: hidden; position: relative;
+      height: 155px; border: 1px solid var(--border-color); cursor: pointer;
+      transition: all 0.22s;
+    }
+    .adm-card:hover { transform: translateY(-4px); box-shadow: var(--hover-shadow); border-color: var(--accent-color) !important; }
+
+    .adm-track-row {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px;
+      transition: all 0.18s;
+    }
+    .adm-track-row:hover { background: var(--bg-tertiary); border-color: rgba(204,164,59,0.3); }
+
+    .adm-artist-card {
+      background: var(--bg-secondary); border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: all 0.22s;
+    }
+    .adm-artist-card:hover { transform: translateY(-4px); box-shadow: var(--hover-shadow); border-color: var(--accent-color); }
+
+    .adm-filter-pill {
+      display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+      border-radius: 40px; color: var(--text-primary); transition: all 0.2s;
+    }
+
+    /* Modal */
+    .adm-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9000;
+      display: flex; align-items: center; justify-content: center; padding: 12px;
+    }
+    .adm-modal {
+      width: 100%; max-width: 420px; background: var(--bg-secondary);
+      border-radius: 16px; border: 1px solid var(--border-color);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8); overflow: hidden; color: var(--text-primary);
+    }
+    .adm-modal.wide { max-width: 540px; }
+    .adm-modal-header {
+      padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .adm-modal-body { padding: 20px; max-height: 74vh; overflow-y: auto; }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 2px dashed rgba(204,164,59,0.3); border-radius: 12px;
+      padding: 18px; text-align: center; cursor: pointer;
+      background: rgba(255,255,255,0.03); transition: all 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: #cca43b; background: rgba(204,164,59,0.08);
+    }
+
+    /* Toast */
+    #adm-toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      background: rgba(204,164,59,0.95); color: #000;
+      padding: 10px 22px; border-radius: 30px; font-weight: 800; font-size: 0.88rem;
+      box-shadow: 0 8px 30px rgba(204,164,59,0.4); z-index: 9999;
+      white-space: nowrap; display: none;
+    }
+
+    /* Form inputs */
+    .adm-inp {
+      width: 100%; padding: 10px 13px; background: var(--bg-tertiary);
+      border: 1px solid var(--border-color); border-radius: 9px;
+      color: var(--text-primary); font-size: 0.87rem; font-family: 'Cairo', sans-serif;
+      outline: none; box-sizing: border-box;
+    }
+    .adm-inp:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(204,164,59,0.15); }
+    .adm-lbl { display: block; margin-bottom: 5px; font-size: 0.77rem; font-weight: 700; color: var(--text-muted); }
+
+    .adm-btn-save {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 11px; background: linear-gradient(135deg,#cca43b,#b8912e);
+      border: none; border-radius: 10px; color: #000;
+      font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 0.9rem; cursor: pointer;
+    }
+    .adm-btn-save:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+    .adm-btn-cancel {
+      padding: 11px 18px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+      color: #aeaeae; font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 0.87rem; cursor: pointer;
+    }
+
+    .adm-empty {
+      text-align: center; padding: 36px 20px; color: #6e6e6e;
+      border-radius: 14px; border: 1px dashed rgba(255,255,255,0.09); margin-bottom: 14px;
+    }
+
+    .adm-sm-btn {
+      border-radius: 6px; padding: 4px 6px; cursor: pointer;
+      display: flex; align-items: center; border: none;
+    }
+    .adm-row-btn {
+      border-radius: 8px; padding: 7px 9px; cursor: pointer;
+      display: flex; align-items: center; border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="adm-root" id="adm-root">
+
+    <!-- ====== LOGIN SCREEN ====== -->
+    <div id="login-screen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0d0d0d 0%,#1a1508 50%,#0d0d0d 100%);padding:20px;width:100vw;box-sizing:border-box;">
+      <!-- Decorative glows -->
+      <div style="position:fixed;inset:0;overflow:hidden;pointer-events:none;">
+        <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(204,164,59,0.08) 0%,transparent 70%);"></div>
+        <div style="position:absolute;bottom:-100px;left:-100px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(204,164,59,0.06) 0%,transparent 70%);"></div>
+      </div>
+
+      <div style="width:100%;max-width:420px;background:rgba(22,22,22,0.95);border-radius:20px;border:1px solid rgba(204,164,59,0.3);box-shadow:0 30px 80px rgba(0,0,0,0.6);overflow:hidden;position:relative;z-index:1;">
+        <div style="padding:36px 32px 24px;text-align:center;border-bottom:1px solid rgba(204,164,59,0.15);">
+          <div style="width:68px;height:68px;border-radius:18px;margin:0 auto 16px;background:linear-gradient(135deg,#cca43b,#7a5f1e);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 8px 30px rgba(204,164,59,0.35);">🎸</div>
+          <h1 style="color:#fff;font-weight:800;font-size:1.3rem;margin:0 0 4px;">استوديو النبلاء</h1>
+          <p style="color:#9c9b96;font-size:0.82rem;margin:0;">لوحة إدارة المحتوى · Admin Panel</p>
+        </div>
+
+        <form id="login-form" style="padding:28px 32px 32px;display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <label class="adm-lbl">البريد الإلكتروني</label>
+            <input type="email" id="login-email" class="adm-inp" placeholder="admin@studio.com" required autocomplete="username">
+          </div>
+          <div>
+            <label class="adm-lbl">كلمة المرور</label>
+            <input type="password" id="login-password" class="adm-inp" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <div id="login-error" style="display:none;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#fca5a5;font-size:0.82rem;text-align:center;"></div>
+          <button type="submit" id="login-btn" style="padding:13px;background:linear-gradient(135deg,#cca43b,#b8912e);border:none;border-radius:10px;color:#000;font-family:'Cairo',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;margin-top:4px;box-shadow:0 4px 20px rgba(204,164,59,0.3);transition:all 0.2s;">
+            دخول للوحة الإدارة ←
+          </button>
+          <p style="color:#6e6e6e;font-size:0.74rem;text-align:center;margin:0;">الوصول للمسؤولين المعتمدين فقط</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== DASHBOARD ====== -->
+    <div id="dashboard-screen" style="display:none;flex:1;flex-direction:column;">
+      <div class="adm-layout">
+
+        <!-- SIDEBAR (desktop) -->
+        <aside class="adm-sidebar" id="adm-sidebar">
+          <div style="padding:22px 18px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#cca43b,#7a5f1e);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🎸</div>
+              <div>
+                <div style="font-weight:800;font-size:0.85rem;line-height:1.2;">استوديو النبلاء</div>
+                <div style="font-size:0.65rem;color:var(--text-muted);">Admin Panel</div>
+              </div>
+            </div>
+            <button id="theme-toggle-sidebar" title="تبديل المظهر" style="background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text-primary);cursor:pointer;">
+              <i data-lucide="sun" style="width:14px;height:14px;"></i>
+            </button>
+          </div>
+
+          <nav style="flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:4px;" id="sidebar-nav">
+            <!-- Dyn nav buttons -->
+          </nav>
+
+          <div style="padding:14px 10px;border-top:1px solid var(--border-color);">
+            <button id="logout-btn-sidebar" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:rgba(239,68,68,0.06);color:#fca5a5;font-family:'Cairo',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;">
+              <i data-lucide="log-out" style="width:14px;height:14px;"></i> تسجيل الخروج
+            </button>
+            <div style="margin-top:8px;font-size:0.65rem;color:var(--text-muted);text-align:center;">admin@studio.com</div>
+          </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="adm-main">
+
+          <!-- Mobile header -->
+          <div class="adm-mobile-header" style="margin-bottom:16px;border-bottom:1px solid var(--border-color);padding-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#cca43b,#7a5f1e);display:flex;align-items:center;justify-content:center;font-size:1rem;">🎸</div>
+              <span style="font-weight:800;font-size:0.92rem;">لوحة الإدارة</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button id="theme-toggle-mobile" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text-primary);cursor:pointer;">
+                <i data-lucide="sun" style="width:14px;height:14px;"></i>
+              </button>
+              <button id="logout-btn-mobile" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:7px 12px;color:#fca5a5;font-family:'Cairo',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                <i data-lucide="log-out" style="width:14px;height:14px;"></i> خروج
+              </button>
+            </div>
+          </div>
+
+          <!-- Section panels -->
+          <div id="section-coming-soon" class="adm-section"></div>
+          <div id="section-latest"      class="adm-section" style="display:none;"></div>
+          <div id="section-exclusive"   class="adm-section" style="display:none;"></div>
+          <div id="section-artists"     class="adm-section" style="display:none;"></div>
+          <div id="section-filters"     class="adm-section" style="display:none;"></div>
+
+        </main>
+      </div>
+
+      <!-- Mobile bottom nav -->
+      <nav class="adm-bottom-nav-mobile" style="position:fixed;bottom:0;left:0;right:0;z-index:500;background:#111;border-top:1px solid rgba(204,164,59,0.2);align-items:stretch;padding-bottom:env(safe-area-inset-bottom);" id="mobile-bottom-nav">
+        <!-- Dyn nav buttons -->
+      </nav>
+    </div>
+
+  </div>
+
+  <!-- Modal container -->
+  <div id="adm-modal-container" style="display:none;"></div>
+
+  <!-- Toast -->
+  <div id="adm-toast"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

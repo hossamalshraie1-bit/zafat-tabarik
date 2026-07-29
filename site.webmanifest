@@ -1,0 +1,15 @@
+{
+  "name": "استوديو زفات تباريك للصوتيات",
+  "short_name": "زفات تباريك",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#4d2b12",
+  "background_color": "#ffffff"
+}
