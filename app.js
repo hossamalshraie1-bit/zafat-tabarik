@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// app.js — استوديو النبلاء | الواجهة الرئيسية
+// app.js — استوديو زفات تباريك | الواجهة الرئيسية
 // ═══════════════════════════════════════════════════════════
 
 // ─── Config ──────────────────────────────────────────────────
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Year
   var cy = document.getElementById('copy-year');
-  if (cy) cy.textContent = '© ' + new Date().getFullYear() + ' استوديو النبلاء للصوتيات. جميع الحقوق محفوظة.';
+  if (cy) cy.textContent = '© ' + new Date().getFullYear() + ' استوديو زفات تباريك للصوتيات. جميع الحقوق محفوظة.';
 
   // Wire ALL buttons immediately (no dependency on data)
   wireHeader();
@@ -339,7 +339,7 @@ function renderLatest() {
         '</div>' +
         '<div class="card-text-overlay">' +
           '<div class="card-title">' + esc(tr.title) + '</div>' +
-          '<div class="card-artist">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو النبلاء') + '</div>' +
+          '<div class="card-artist">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو زفات تباريك') + '</div>' +
         '</div>' +
       '</div></article>';
   }).join('');
@@ -364,7 +364,7 @@ function renderExclusive() {
         '</button>' +
         '<div class="card-text-overlay">' +
           '<div class="card-title">' + esc(tr.title) + '</div>' +
-          '<div class="card-artist">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو النبلاء') + '</div>' +
+          '<div class="card-artist">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو زفات تباريك') + '</div>' +
         '</div>' +
       '</div></div>';
   }).join('');
@@ -610,7 +610,7 @@ function renderAllWorks() {
       '</div>' +
       '<div style="flex:1;min-width:0;">' +
         '<div style="font-size:0.9rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(tr.title) + '</div>' +
-        '<div style="font-size:0.78rem;color:var(--text-secondary);">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو النبلاء') + '</div>' +
+        '<div style="font-size:0.78rem;color:var(--text-secondary);">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو زفات تباريك') + '</div>' +
       '</div>' +
       '<button onclick="toggleSave(\'' + tr.id + '\',event)" style="border:none;background:transparent;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">' +
         '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="' + (saved?'#cca43b':'none') + '" stroke="' + (saved?'#cca43b':'var(--text-muted)') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
@@ -652,7 +652,7 @@ function renderSearch(q) {
       '</div>' +
       '<div style="flex:1;min-width:0;">' +
         '<div style="font-size:0.88rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(tr.title) + '</div>' +
-        '<div style="font-size:0.75rem;color:var(--text-secondary);">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو النبلاء') + '</div>' +
+        '<div style="font-size:0.75rem;color:var(--text-secondary);">' + esc((tr.artists && tr.artists.name) || tr.artist || 'استوديو زفات تباريك') + '</div>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -792,7 +792,7 @@ async function submitBooking(e) {
     ? '\n\n🎵 الأعمال المرجعية:\n' + cart.map(function (c) { return '  - ' + c.title; }).join('\n')
     : '';
 
-  var msg = 'السلام عليكم 🌺\n\nطلب حجز لدى استوديو النبلاء:\n\n👤 الاسم: ' + name + '\n🎙️ الخدمة: ' + servLabel + '\n📝 الملاحظات: ' + (notes||'لا يوجد') + cartText + '\n\nشكراً ✨';
+  var msg = 'السلام عليكم 🌺\n\nطلب حجز لدى استوديو زفات تباريك:\n\n👤 الاسم: ' + name + '\n🎙️ الخدمة: ' + servLabel + '\n📝 الملاحظات: ' + (notes||'لا يوجد') + cartText + '\n\nشكراً ✨';
 
   if (DB) {
     try {
@@ -894,7 +894,7 @@ function updatePlayerUI() {
   }
 
   setText('player-title',  currentTrack.title);
-  setText('player-artist', (currentTrack.artists && currentTrack.artists.name) || currentTrack.artist || 'استوديو النبلاء');
+  setText('player-artist', (currentTrack.artists && currentTrack.artists.name) || currentTrack.artist || 'استوديو زفات تباريك');
 
   var iconPlay  = document.getElementById('player-icon-play');
   var iconPause = document.getElementById('player-icon-pause');
