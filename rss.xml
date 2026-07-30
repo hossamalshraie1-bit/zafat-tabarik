@@ -1,35 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.5.org/2005/Atom">
   <channel>
     <title>استوديو زفات تباريك للصوتيات</title>
-    <link>https://zafat-tabarik.vercel.app/</link>
-    <description>أحدث الأخبار، العروض، والأنشطة الصوتية من استوديو زفات تباريك.</description>
+    <link>https://zafat-tabarik.vercel.app</link>
+    <description>استوديو زفات تباريك للصوتيات - متخصصون في إنتاج الشيلات بالأسماء، زفات الأفراح، الأناشيد، المكس والماستر الاحترافي، وتسجيل البودكاست.</description>
     <language>ar</language>
-    <lastBuildDate>Wed, 30 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 30 Jul 2026 03:00:00 +0300</lastBuildDate>
     <atom:link href="https://zafat-tabarik.vercel.app/rss.xml" rel="self" type="application/rss+xml" />
 
     <item>
-      <title>عرض خاص لقريباً: زفة باسمك مع هدية صوتية مجانية</title>
-      <link>https://zafat-tabarik.vercel.app/</link>
-      <guid>https://zafat-tabarik.vercel.app/post/1</guid>
-      <pubDate>Wed, 30 Jul 2026 00:00:00 GMT</pubDate>
-      <description>عرض خاص جديد في الاستوديو يتضمن زفة مخصصة بالأسماء مع هدية صوتية مجانية للمناسبات القادمة.</description>
+      <title>أحدث أعمال استوديو زفات تباريك للصوتيات</title>
+      <link>https://zafat-tabarik.vercel.app</link>
+      <guid>https://zafat-tabarik.vercel.app/#home</guid>
+      <pubDate>Thu, 30 Jul 2026 03:00:00 +0300</pubDate>
+      <description>تصفح معرض أعمالنا في إنتاج الزفات، الشيلات، والهندسة الصوتية الاحترافية.</description>
     </item>
 
-    <item>
-      <title>شيلة جديدة في طابع فني عصري</title>
-      <link>https://zafat-tabarik.vercel.app/</link>
-      <guid>https://zafat-tabarik.vercel.app/post/2</guid>
-      <pubDate>Tue, 29 Jul 2026 00:00:00 GMT</pubDate>
-      <description>تم تجهيز شيلة جديدة بصوت واضح وتوزيع احترافي ليتناسب مع المناسبات والأفراح الخاصة.</description>
-    </item>
-
-    <item>
-      <title>جلسة تسجيل VIP للمناسبات الكبيرة</title>
-      <link>https://zafat-tabarik.vercel.app/</link>
-      <guid>https://zafat-tabarik.vercel.app/post/3</guid>
-      <pubDate>Mon, 28 Jul 2026 00:00:00 GMT</pubDate>
-      <description>نوفر جلسات تسجيل VIP مع مواصفات عالية وخصومات خاصة لأصحاب المناسبات الكبيرة.</description>
-    </item>
   </channel>
 </rss>
