@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>استوديو زفات تباريك للصوتيات</title>
+  <subtitle>أحدث الأخبار، العروض، والأنشطة الصوتية من الاستوديو</subtitle>
+  <link href="https://zafat-tabarik.vercel.app/" />
+  <link rel="self" href="https://zafat-tabarik.vercel.app/atom.xml" />
+  <id>https://zafat-tabarik.vercel.app/</id>
+  <updated>2026-07-30T00:00:00Z</updated>
+  <author>
+    <name>استوديو زفات تباريك</name>
+  </author>
+
+  <entry>
+    <title>عرض خاص قريباً: زفة باسمك مع هدية صوتية مجانية</title>
+    <link href="https://zafat-tabarik.vercel.app/" />
+    <id>https://zafat-tabarik.vercel.app/post/1</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>عرض خاص جديد في الاستوديو يتضمن زفة مخصصة بالأسماء مع هدية صوتية مجانية للمناسبات القادمة.</summary>
+  </entry>
+
+  <entry>
+    <title>شيلة جديدة في طابع فني عصري</title>
+    <link href="https://zafat-tabarik.vercel.app/" />
+    <id>https://zafat-tabarik.vercel.app/post/2</id>
+    <updated>2026-07-29T00:00:00Z</updated>
+    <summary>تم تجهيز شيلة جديدة بصوت واضح وتوزيع احترافي ليتناسب مع المناسبات والأفراح الخاصة.</summary>
+  </entry>
+
+  <entry>
+    <title>جلسة تسجيل VIP للمناسبات الكبيرة</title>
+    <link href="https://zafat-tabarik.vercel.app/" />
+    <id>https://zafat-tabarik.vercel.app/post/3</id>
+    <updated>2026-07-28T00:00:00Z</updated>
+    <summary>نوفر جلسات تسجيل VIP مع مواصفات عالية وخصومات خاصة لأصحاب المناسبات الكبيرة.</summary>
+  </entry>
+</feed>
